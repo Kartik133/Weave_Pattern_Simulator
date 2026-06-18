@@ -1,4 +1,4 @@
-let ppi = 50;
+let ppi = 72;
 let pick_repeat = 8;
 let reed = [72, 2];
 let reed_space = 65;
@@ -21,6 +21,9 @@ let t2;
 let x = 40;
 let y = 30;
 let gap = 40;
+
+let warp_colours = [];
+let weft_colours = [];
 
 function setup() {
 
@@ -242,34 +245,37 @@ function setup() {
   submitBtn.mousePressed(() => {
 
     // normal values
-    ppi = Number(inputs.ppi.value());
+    // ppi = Number(inputs.ppi.value());
 
-    pick_repeat = Number(inputs.pick_repeat.value());
+    // pick_repeat = Number(inputs.pick_repeat.value());
 
-    reed_space = Number(inputs.reed_space.value());
+    // reed_space = Number(inputs.reed_space.value());
 
-    epi = Number(inputs.epi.value());
+    // epi = Number(inputs.epi.value());
 
-    inch = Number(inputs.inch.value());
+    // inch = Number(inputs.inch.value());
 
-    count_denier_warp = Number(inputs.count_denier_warp.value());
-    count_denier_weft = Number(inputs.count_denier_weft.value());
+    // count_denier_warp = Number(inputs.count_denier_warp.value());
+    // count_denier_weft = Number(inputs.count_denier_weft.value());
 
-    // reed
-    reed = inputs.reed.value()
-      .split(",")
-      .map(x => Number(x.trim()));
+    // // reed
+    // reed = inputs.reed.value()
+    //   .split(",")
+    //   .map(x => Number(x.trim()));
 
-    // draft
-    draft = [...draftArr];
+    // // draft
+    // draft = [...draftArr];
 
-    // peg plan
-    peg_plan = pegRows.map(r => [...r]);
+    // // peg plan
+    // peg_plan = pegRows.map(r => [...r]);
 
     // ---------- REMOVE ALL FORM ELEMENTS ----------
     for(let el of allElements) {
       el.remove();
     }
+
+    // Scroll webpage to top
+    window.scrollTo(0, 0);
 
     // ---------- CALL YOUR FUNCTION ----------
     drawWeavePattern();
@@ -304,6 +310,7 @@ function createInputField(name, defaultValue) {
 
 // ---------- YOUR MAIN FUNCTION ----------
 function drawWeavePattern() {
+  resizeCanvas(inch*10.5,inch*10.5);
   background(100);
 
   count_Ne_warp=5315/count_denier_warp;
@@ -313,21 +320,25 @@ function drawWeavePattern() {
   rectMode(CENTER);
   textAlign(CENTER);
 
-  for(let i=1;i<=ppi;i++) {
+  for(let i=1;i<=ppi*10;i++) {
+    push();
     stroke(255,0,0);
     strokeWeight(t2);
-    line(0,(i*inch/ppi)-(inch/2)/ppi,inch,(i*inch/ppi)-(inch/2)/ppi);
+    line(0,(i*inch/ppi)-(inch/2)/ppi,inch*10,(i*inch/ppi)-(inch/2)/ppi);
+    pop();
   }
 
-  for(let i=1;i<=epi;i++) {
+  for(let i=1;i<=epi*10;i++) {
+    push();
     stroke(0,255,0);
     strokeWeight(t1);
-    line((i*inch/epi)-(inch/2)/epi,0,(i*inch/epi)-(inch/2)/epi,inch);
+    line((i*inch/epi)-(inch/2)/epi,0,(i*inch/epi)-(inch/2)/epi,inch*10);
+    pop();
   }
 
-  for(let i=1;i<=ppi*epi;i++) {
-    let pic_number=floor((i-1)/epi)+1;
-    let end_number=(i-1)%epi+1;
+  for(let i=1;i<=ppi*epi*100;i++) {
+    let pic_number=floor((i-1)/(epi*10))+1;
+    let end_number=(i-1)%(epi*10)+1;
     
     push();
 
@@ -345,6 +356,36 @@ function drawWeavePattern() {
     }
     noStroke();
     rect((end_number*inch/epi)-(inch/2)/epi,(pic_number*inch/ppi)-(inch/2)/ppi,t1,t2);
+    pop();
+  }
+
+  for(let i=0;i<=10;i++) {
+    push();
+    stroke(0);
+    strokeWeight(1);
+    line(0,i*inch,10*inch,i*inch);
+    pop();
+
+    push();
+    noStroke();
+    fill(0);
+    textSize(20);
+    text(i,10,20+i*inch);
+    pop();
+  }
+
+  for(let i=0;i<=10;i++) {
+    push();
+    stroke(0);
+    strokeWeight(1);
+    line(i*inch,0,i*inch,10*inch);
+    pop();
+
+    push();
+    noStroke();
+    fill(0);
+    textSize(20);
+    text(i,10+i*inch,20);
     pop();
   }
 }
