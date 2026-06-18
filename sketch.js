@@ -62,6 +62,35 @@ function setup() {
 
   y += gap + 10;
 
+  // ---------- WARP COLOUR ----------
+let warpColourLabel = createDiv("<b>Warp Colours (format: blue,2,red,3)</b>");
+warpColourLabel.position(x, y);
+allElements.push(warpColourLabel);
+
+y += 25;
+
+inputs.warpColours = createInput("");
+inputs.warpColours.position(x, y);
+inputs.warpColours.size(250);
+allElements.push(inputs.warpColours);
+
+y += gap + 10;
+
+
+// ---------- WEFT COLOUR ----------
+let weftColourLabel = createDiv("<b>Weft Colours (format: blue,2,red,3)</b>");
+weftColourLabel.position(x, y);
+allElements.push(weftColourLabel);
+
+y += 25;
+
+inputs.weftColours = createInput("");
+inputs.weftColours.position(x, y);
+inputs.weftColours.size(250);
+allElements.push(inputs.weftColours);
+
+y += gap + 10;
+
   // ---------- DRAFT ----------
   let draftTitle = createDiv("<b>Draft Sequence</b>");
   draftTitle.position(x, y);
@@ -245,29 +274,65 @@ function setup() {
   submitBtn.mousePressed(() => {
 
     // normal values
-    // ppi = Number(inputs.ppi.value());
+    ppi = Number(inputs.ppi.value());
 
-    // pick_repeat = Number(inputs.pick_repeat.value());
+    pick_repeat = Number(inputs.pick_repeat.value());
 
-    // reed_space = Number(inputs.reed_space.value());
+    reed_space = Number(inputs.reed_space.value());
 
-    // epi = Number(inputs.epi.value());
+    epi = Number(inputs.epi.value());
 
-    // inch = Number(inputs.inch.value());
+    inch = Number(inputs.inch.value());
 
-    // count_denier_warp = Number(inputs.count_denier_warp.value());
-    // count_denier_weft = Number(inputs.count_denier_weft.value());
+    count_denier_warp = Number(inputs.count_denier_warp.value());
+    count_denier_weft = Number(inputs.count_denier_weft.value());
 
-    // // reed
-    // reed = inputs.reed.value()
-    //   .split(",")
-    //   .map(x => Number(x.trim()));
+    // reed
+    reed = inputs.reed.value()
+      .split(",")
+      .map(x => Number(x.trim()));
 
-    // // draft
-    // draft = [...draftArr];
+    // draft
+    draft = [...draftArr];
 
-    // // peg plan
-    // peg_plan = pegRows.map(r => [...r]);
+    // peg plan
+    peg_plan = pegRows.map(r => [...r]);
+
+    // ---------- WARP COLOUR ARRAY ----------
+warp_colours = [];
+
+let warpData = inputs.warpColours.value()
+  .split(",")
+  .map(x => x.trim());
+
+for(let i = 0; i < warpData.length; i += 2) {
+  let colour = warpData[i];
+  let repeat = Number(warpData[i + 1]);
+
+  for(let j = 0; j < repeat; j++) {
+    warp_colours.push(colour);
+  }
+}
+
+
+// ---------- WEFT COLOUR ARRAY ----------
+weft_colours = [];
+
+let weftData = inputs.weftColours.value()
+  .split(",")
+  .map(x => x.trim());
+
+for(let i = 0; i < weftData.length; i += 2) {
+  let colour = weftData[i];
+  let repeat = Number(weftData[i + 1]);
+
+  for(let j = 0; j < repeat; j++) {
+    weft_colours.push(colour);
+  }
+}
+
+console.log("Warp:", warp_colours);
+console.log("Weft:", weft_colours);
 
     // ---------- REMOVE ALL FORM ELEMENTS ----------
     for(let el of allElements) {
@@ -322,7 +387,7 @@ function drawWeavePattern() {
 
   for(let i=1;i<=ppi*10;i++) {
     push();
-    stroke(255,0,0);
+    stroke(/*255,0,0*/weft_colours[(i - 1) % weft_colours.length]);
     strokeWeight(t2);
     line(0,(i*inch/ppi)-(inch/2)/ppi,inch*10,(i*inch/ppi)-(inch/2)/ppi);
     pop();
@@ -330,7 +395,7 @@ function drawWeavePattern() {
 
   for(let i=1;i<=epi*10;i++) {
     push();
-    stroke(0,255,0);
+    stroke(/*0,255,0*/warp_colours[(i - 1) % warp_colours.length]);
     strokeWeight(t1);
     line((i*inch/epi)-(inch/2)/epi,0,(i*inch/epi)-(inch/2)/epi,inch*10);
     pop();
@@ -350,9 +415,9 @@ function drawWeavePattern() {
      b = (end_number-1)%draft.length;
 
     if(peg_plan[a].includes(draft[b])) {
-      fill(0,255,0);
+      fill(/*0,255,0*/warp_colours[(end_number - 1) % warp_colours.length]);
     }else{
-      fill(255,0,0);
+      fill(/*255,0,0*/weft_colours[(pic_number - 1) % weft_colours.length]);
     }
     noStroke();
     rect((end_number*inch/epi)-(inch/2)/epi,(pic_number*inch/ppi)-(inch/2)/ppi,t1,t2);
