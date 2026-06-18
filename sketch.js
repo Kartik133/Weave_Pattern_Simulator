@@ -9,11 +9,14 @@ let draft = [1,2,3,4,5,6,7,8];
 let peg_plan = [[2,6],[1,2,4,5,6,8],[4,8],[2,3,4,6,7,8],[3,7],[1,3,4,5,7,8],[1,5],[1,2,3,5,6,7]];
 
 let inch = 400;
-let count_denier = 480;
-let count_Ne;
+let count_denier_warp = 480;
+let count_denier_weft = 480;
+let count_Ne_warp;
+let count_Ne_weft;
 let inputs = {};
 let allElements = [];
-let t;
+let t1;
+let t2;
 
 let x = 40;
 let y = 30;
@@ -21,7 +24,7 @@ let gap = 40;
 
 function setup() {
 
-  createCanvas(windowWidth, 1250);
+  createCanvas(windowWidth, 1300);
 
   background(100);
 
@@ -38,7 +41,8 @@ function setup() {
   createInputField("reed_space", /*reed_space*/0);
   createInputField("epi", /*epi*/0);
   createInputField("inch", /*inch*/0);
-  createInputField("count_denier", /*count_denier*/0);
+  createInputField("count_denier_warp", 0);
+  createInputField("count_denier_weft", 0);
 
   // ---------- REED ----------
   let reedLabel = createDiv("<b>Reed (format: 72,2)</b>");
@@ -248,7 +252,8 @@ function setup() {
 
     inch = Number(inputs.inch.value());
 
-    count_denier = Number(inputs.count_denier.value());
+    count_denier_warp = Number(inputs.count_denier_warp.value());
+    count_denier_weft = Number(inputs.count_denier_weft.value());
 
     // reed
     reed = inputs.reed.value()
@@ -301,20 +306,22 @@ function createInputField(name, defaultValue) {
 function drawWeavePattern() {
   background(100);
 
-  count_Ne=5315/count_denier;
-  t=14.28346456692913/sqrt(count_Ne);
+  count_Ne_warp=5315/count_denier_warp;
+  t1=14.28346456692913/sqrt(count_Ne_warp);
+  count_Ne_weft=5315/count_denier_weft;
+  t2=14.28346456692913/sqrt(count_Ne_weft);
   rectMode(CENTER);
   textAlign(CENTER);
 
   for(let i=1;i<=ppi;i++) {
     stroke(255,0,0);
-    strokeWeight(t);
+    strokeWeight(t2);
     line(0,(i*inch/ppi)-(inch/2)/ppi,inch,(i*inch/ppi)-(inch/2)/ppi);
   }
 
   for(let i=1;i<=epi;i++) {
     stroke(0,255,0);
-    strokeWeight(t);
+    strokeWeight(t1);
     line((i*inch/epi)-(inch/2)/epi,0,(i*inch/epi)-(inch/2)/epi,inch);
   }
 
@@ -337,7 +344,7 @@ function drawWeavePattern() {
       fill(255,0,0);
     }
     noStroke();
-    rect((end_number*inch/epi)-(inch/2)/epi,(pic_number*inch/ppi)-(inch/2)/ppi,t,t);
+    rect((end_number*inch/epi)-(inch/2)/epi,(pic_number*inch/ppi)-(inch/2)/ppi,t1,t2);
     pop();
   }
 }
